@@ -1,0 +1,53 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../../bower_components/neon-animation/animations/slide-from-right-animation.html">
+
+<dom-module id="doc-card">
+    <style is="custom-style">
+        :host {
+            margin-right: 1em;
+        }
+    </style>
+    <template>
+        <paper-toast id="errorToast">Could not open document.</paper-toast>
+        <paper-card id="card" heading="[[doc.title]]">
+            <div class="card-content">[[doc.description]]</div>
+            <div class="card-actions">
+                <paper-button on-tap="goToEditor">Edit</paper-button>
+            </div>
+        </paper-card>
+    </template>
+    <script>
+        Polymer({
+            is: 'doc-card',
+            behaviors: [
+                Polymer.NeonAnimationRunnerBehavior
+            ],
+            properties: {
+                doc: Object,
+                animationConfig: {
+                    value() {
+                        return {
+                            entry: {
+                                name: 'fade-in-animation',
+                                node: this.$.card
+                            }
+                        }
+                    }
+                }
+            },
+            goToEditor() {
+                if (this.doc.id !== undefined) {
+                    page('/note/' + this.doc.id);
+                } else {
+                    this.$.errorToast.open();
+                }
+            },
+            ready() {
+                this.playAnimation('entry');
+            }
+        });
+    </script>
+</dom-module>

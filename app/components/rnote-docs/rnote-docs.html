@@ -1,0 +1,84 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../doc-card/doc-card.html">
+<link rel="import" href="../newdoc-dialog/newdoc-dialog.html">
+
+<dom-module id="rnote-docs">
+    <style is="custom-style">
+        paper-fab {
+            position: fixed;
+            bottom: 1em;
+            right: 1em;
+        }
+    </style>
+    <template>
+        <paper-toast id="newDocToast">Created new document.</paper-toast>
+        <newdoc-dialog id="newDoc" open="{{open}}" on-closed="dialogClose"></newdoc-dialog>
+        <iron-localstorage id="docs" name="docs" value="{{docs}}"></iron-localstorage>
+        <paper-header-panel class="flex">
+            <paper-toolbar>
+                <div class="bottom title">
+                    <iron-icon icon="av:library-books"></iron-icon>
+                    Notes ({{docs.length}})
+                </div>
+            </paper-toolbar>
+            <div style="padding: 1em;">
+                <template is="dom-repeat" items="{{docs}}" as="doc">
+                    <doc-card class="flex-3" doc="[[doc]]"></doc-card>
+                </template>
+                <paper-fab id="fab" icon="add" on-tap="add"></paper-fab>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+        Polymer({
+            is: 'rnote-docs',
+            behaviors: [
+                Polymer.NeonAnimationRunnerBehavior
+            ],
+            properties: {
+                docs: {
+                    type: Array
+                },
+                open: {
+                    type: Boolean,
+                    value: false
+                },
+                animationConfig: {
+                    value() {
+                        return {
+                            'show-fab': {
+                                name: 'slide-from-bottom-animation',
+                                node: this.$.fab
+                            }
+                        }
+                    }
+                }
+            },
+            add() {
+                this.$.newDoc.$.dialog.open();
+            },
+            dialogClose() {
+                var doc = this.$.newDoc.doc;
+                if (doc && doc.title) {
+                    doc.description = doc.description || "";
+                    doc.id = this.docs.length || 0;
+                    this.set('docs', this.docs.concat(doc));
+                    this.$.newDoc.doc = {};
+                    this.$.newDocToast.open();
+                }
+            },
+            ready() {
+                this.playAnimation('show-fab');
+            }
+        });
+    </script>
+</dom-module>

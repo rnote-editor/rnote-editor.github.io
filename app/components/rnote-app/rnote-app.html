@@ -1,0 +1,48 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/font-roboto/roboto.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<script src="../../../bower_components/page/page.js"></script>
+
+<link rel="import" href="../rnote-docs/rnote-docs.html">
+<link rel="import" href="../doc-editor/doc-editor.html">
+
+<link rel="import" href="../../../seven-seas/seven-seas.html">
+
+<dom-module id="rnote-app">
+    <style is="custom-style">
+        :host {
+            font-family: Roboto, sans-serif;
+        }
+    </style>
+    <template>
+        <iron-pages activate-event="lalala" id="pages" attr-for-selected="route" selected="{{selected}}">
+            <rnote-docs id="docs" route="/"></rnote-docs>
+            <doc-editor class="flex" id="editor" route="detail"></doc-editor>
+        </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'rnote-app',
+            ready() {
+                var pages = this.$.pages;
+                var editor = this.$.editor;
+
+                page('/', (function () {
+                    this.$.docs.$.docs.reload();
+                    pages.select('/');
+                }).bind(this));
+                page('/note/:id', function (ctx) {
+                    editor.docId = parseInt(ctx.params.id);
+                    pages.select('detail');
+                    editor.ready();
+                });
+                page('*', function () {
+                    page('/');
+                });
+
+                page.base('/app');
+                page({hashbang: true});
+            }
+        });
+    </script>
+</dom-module>

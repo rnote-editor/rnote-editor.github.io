@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>rNote</title>
+
+    <script>
+        if (!('localStorage' in window)) {
+            window.localStorage = {
+                _data: {},
+                setItem: function (id, val) {
+                    return this._data[id] = String(val);
+                },
+                getItem: function (id) {
+                    return this._data.hasOwnProperty(id) ? this._data[id] : undefined;
+                },
+                removeItem: function (id) {
+                    return delete this._data[id];
+                },
+                clear: function () {
+                    return this._data = {};
+                }
+            };
+        }
+		
+		if (!localStorage.docs) {
+			localStorage.docs = '[]';
+		}
+    </script>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../bower_components/prism-element/prism-highlighter.html">
+    <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+    <link rel="import" href="components/rnote-app/rnote-app.html">
+</head>
+<body class="fullbleed vertical layout">
+<prism-highlighter></prism-highlighter>
+<rnote-app></rnote-app>
+</body>
+</html>

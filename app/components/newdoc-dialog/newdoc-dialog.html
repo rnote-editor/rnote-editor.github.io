@@ -1,0 +1,42 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="newdoc-dialog">
+    <template>
+        <paper-dialog id="dialog" opened="{{open}}" entry-animation="slide-from-bottom-animation"
+                      exit-animation="fade-out-animation" on-iron-overlay-closed="triggerClose">
+            <h2>
+                <iron-icon icon="add"></iron-icon>
+                New Note
+            </h2>
+            <paper-dialog-scrollable>
+                <paper-input label="Note Title" value="{{doc.title}}"></paper-input>
+                <paper-textarea label="Note Description" value="{{doc.description}}" rows="5"></paper-textarea>
+            </paper-dialog-scrollable>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm>Accept</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'newdoc-dialog',
+            properties: {
+                doc: {
+                    type: Object,
+                    value: {}
+                }
+            },
+            triggerClose(e) {
+                this.fire('closed', e);
+            }
+        });
+    </script>
+</dom-module>
