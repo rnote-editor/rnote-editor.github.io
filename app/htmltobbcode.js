@@ -1,10 +1,30 @@
 //Adapted from http://skeena.net/htmltobb/
 
+function decodeHtmlEntity(str) {
+	str = decodeURIComponent(str).replace(/&quot;/g, '"');
+	str = str.replace(/&nbsp;/g, ' ');
+	return str.replace(/&#(\d+);/g, function(match, dec) {
+		return String.fromCharCode(dec);
+	});
+};
+
+
 var htmltobbcode = function(html) {
+	html = decodeHtmlEntity(html);
+	html = html.replace(/<pre(.*?)>(.*?)<\/pre>/gmi, "[code]$2[/code]");
 
-  html = html.replace(/<pre(.*?)>(.*?)<\/pre>/gmi, "[code]$2[/code]");
+	//console.info(html)
+	// Map headers to [size] blocks
+	html = html.replace(/<h1(.*?)>(.*?)<\/h1>/gi, "\n\n[size=xx-large]$2[\/size]\n");
+	html = html.replace(/<h2(.*?)>(.*?)<\/h2>/gi, "\n\n[size=x-large]$2[\/size]\n");
+	html = html.replace(/<h3(.*?)>(.*?)<\/h3>/gi, "\n\n[size=large]$2[\/size]\n");
+	html = html.replace(/<h4(.*?)>(.*?)<\/h4>/gi, "\n\n[size=medium]$2[\/size]\n");
+	html = html.replace(/<h5(.*?)>(.*?)<\/h5>/gi, "\n\n[size=small]$2[\/size]\n");
+	html = html.replace(/<h6(.*?)>(.*?)<\/h6>/gi, "\n\n[size=x-small]$2[\/size]\n");
+	html = html.replace(/<h7(.*?)>(.*?)<\/h7>/gi, "\n\n[size=xx-small]$2[\/size]\n");
+	
 
-	html = html.replace(/<h[1-7](.*?)>(.*?)<\/h[1-7]>/, "\n[h]$2[/h]\n");
+	//html = html.replace(/<h[1-7](.*?)>(.*?)<\/h[1-7]>/, "\n[h]$2[/h]\n");
 
 	//paragraph handling:
 	//- if a paragraph opens on the same line as another one closes, insert an extra blank line
@@ -13,8 +33,11 @@ var htmltobbcode = function(html) {
 	// html += html.replace(/<\/p><p/<\/p>\n<p/gi;
 	// html += html.replace(/<p[^>]*>/\n\n/gi;
 	// html += html.replace(/<\/p>//gi;
+	html = html.replace(/<\/p><p[^>]*>/gi, "\n\n");
+	html = html.replace(/<p[^>]*>/gi, "\n\n");
+	html = html.replace(/<\/p>/, "");
 
-	html = html.replace(/<br(.*?)>/gi, "\n");
+	html = html.replace(/<br(.*?)>/gi, "\n\n");
 	html = html.replace(/<textarea(.*?)>(.*?)<\/textarea>/gmi, "\[code]$2\[\/code]");
 	html = html.replace(/<b>/gi, "[b]");
 	html = html.replace(/<i>/gi, "[i]");
